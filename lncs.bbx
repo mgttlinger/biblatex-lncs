@@ -4,6 +4,7 @@
 
 \ExecuteBibliographyOptions{giveninits=true,
   doi=true,
+  sorting=nyt,
   minbibnames=1,
   mincrossrefs=99,
   maxbibnames=999}
@@ -29,6 +30,9 @@
 \DeclareFieldFormat{labelnumberwidth}{#1.}
 \DeclareFieldFormat{journaltitle}{#1}
 \DeclareFieldFormat{titlecase}{\MakeSentenceCase*{#1}}
+% splncs04 sentence-cases contribution titles (format.title) but keeps
+% standalone-work titles verbatim (format.btitle: book, proceedings, thesis).
+\DeclareFieldFormat[book,proceedings,thesis]{titlecase}{#1}
 \DeclareFieldFormat[article,book,inproceedings,incollection,online,report,thesis,misc]{title}{#1}
 \DeclareFieldFormat{booktitle}{#1}
 \DeclareFieldFormat[article]{pages}{#1}
@@ -156,6 +160,17 @@
   {}%
 }
 
+% splncs04 separates a bare url from the preceding block with a comma
+% (", \url{}"), while a doi keeps the full stop (". \doi{}").
+\renewbibmacro*{doi+eprint+url}{%
+  \printfield{doi}%
+  \newunit\newblock
+  \usebibmacro{eprint}%
+  \iffieldundef{url}
+  {}
+  {\setunit{\addcomma\space}\usebibmacro{url+urldate}}%
+}
+
 \renewbibmacro*{name:andothers}{% from biblatex.def
   \ifboolexpr{
     test {\ifnumequal{\value{listcount}}{\value{liststop}}}
@@ -268,7 +283,13 @@
     {\usebibmacro{acronym/booktitle}%
       \printfield{series}}%
   }
-  \iffieldundef{pages}{}{\setunit{\addcomma\space}\printfield{pages}}%
+  % splncs04: pages follow the volume with a comma, but follow a series-less
+  % booktitle after a full stop (new.sentence). Keep the pending period in the
+  % no-series branch; add the comma only when a series/volume precedes.
+  % \printtext{\midsentence...} flushes the pending period, then resets the
+  % capitalisation flag so the "pp." string stays lowercase (as in splncs04),
+  % rather than becoming "Pp." at the sentence start biblatex sees.
+  \iffieldundef{pages}{}{\iffieldundef{series}{}{\setunit{\addcomma\space}}\printtext{\midsentence\printfield{pages}}}%
   \newunit%
   \usebibmacro{publisher+location}%
   \setunit{\addspace}%
