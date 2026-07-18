@@ -25,7 +25,7 @@ For building the included `biblatex-lncs-test.tex` the `llncs` class from the Sp
 
 ## License
 
-Copyright (c) 2022-2023 Merlin Humml and contributors
+Copyright (c) 2022-2026 Merlin Humml and contributors
 
 Forked from <https://github.com/neapel/biblatex-lncs.git>,
 who forked from <https://github.com/jossco/biblatex-lncs.git>, by Joseph Scott
