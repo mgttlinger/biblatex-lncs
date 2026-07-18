@@ -30,7 +30,7 @@ jobs:
         uses: dante-ev/latex-action@edge
         with:
           entrypoint: ./release.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v7
         with:
           name: ctan
           path: biblatex-lncs.tar.gz
